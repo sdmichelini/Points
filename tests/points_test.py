@@ -37,6 +37,12 @@ class PointsTestCase(unittest.TestCase):
 		self.assertEqual(0, points.UserPointItem.get_points_for_user_in_term('test@example.com',3))
 		self.assertEqual(0, points.UserPointItem.get_points_for_user_in_term('test@gmail.com',2))
 
+		user_point_item2 = points.UserPointItem(user_email='joe@example.com',
+							point_item = point_item2,
+							completed=False)
+		user_point_item2.put()
+		self.assertEqual(-5, points.UserPointItem.get_points_for_user_in_term('joe@example.com',2))
+
 	def testGetAllUsersPointsTerm(self):
 		points_dict = points.UserPointItem.get_points_for_all_users_in_term(2)
 		self.assertEqual({}, points_dict)
