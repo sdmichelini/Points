@@ -14,7 +14,7 @@ class PointsTestCase(unittest.TestCase):
 		self.testbed = testbed.Testbed()
 		self.testbed.activate()
 		self.testbed.init_datastore_v3_stub()
-		self.testbed.init_memcache_stub()	
+		self.testbed.init_memcache_stub()
 		ndb.get_context().clear_cache()
 
 	def tearDown(self):
@@ -23,7 +23,7 @@ class PointsTestCase(unittest.TestCase):
 	def testGetUserPointsTerm(self):
 		points_count = points.UserPointItem.get_points_for_user_in_term('test@example.com', 2)
 		self.assertEqual(0, points_count)
-		point_item2 = points.PointItem(title='My Points Item', 
+		point_item2 = points.PointItem(title='My Points Item',
 					points_completed=5,
 					points_missed=5,
 					term=2)
@@ -40,7 +40,7 @@ class PointsTestCase(unittest.TestCase):
 	def testGetAllUsersPointsTerm(self):
 		points_dict = points.UserPointItem.get_points_for_all_users_in_term(2)
 		self.assertEqual({}, points_dict)
-		point_item2 = points.PointItem(title='My Points Item', 
+		point_item2 = points.PointItem(title='My Points Item',
 					points_completed=5,
 					points_missed=5,
 					term=2)
@@ -54,6 +54,19 @@ class PointsTestCase(unittest.TestCase):
 		self.assertEqual(5, points_dict.get('test@example.com'))
 		points_dict = points.UserPointItem.get_points_for_all_users_in_term(1)
 		self.assertEqual({}, points_dict)
+
+	def testInsertPointsItem(self):
+		completed = ['test@example.com', 'test2@example.com']
+		missed = ['joe@example.com']
+		point_item2 = points.PointItem(title='My Points Item',
+					points_completed=5,
+					points_missed=5,
+					term=2)
+		points.insert_points_item_with_users(point_item2, completed, missed)
+		self.assertEqual(5, points.UserPointItem.get_points_for_user_in_term('test@example.com',2))
+		self.assertEqual(5, points.UserPointItem.get_points_for_user_in_term('test2@example.com',2))
+		self.assertEqual(-5, points.UserPointItem.get_points_for_user_in_term('joe@example.com',2))
+
 
 
 

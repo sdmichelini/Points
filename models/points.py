@@ -29,7 +29,7 @@ class PointItem(ndb.Model):
 	points_missed = ndb.IntegerProperty(required=True)
 	#Is the event madatory?
 	mandatory = ndb.BooleanProperty(default=False)
-	
+
 
 class UserPointItem(ndb.Model):
 	#Email of User
@@ -40,7 +40,7 @@ class UserPointItem(ndb.Model):
 	completed = ndb.BooleanProperty(required = True)
 	'''
 	Get's the points for a specified user. It will query the UserPointItem to find all the points for a user
-	
+
 	Returns an integer with the points
 	'''
 	@classmethod
@@ -71,3 +71,18 @@ class UserPointItem(ndb.Model):
 			else:
 				ret[item.user_email] = ret.get(item.user_email, 0) - item.point_item.points_missed
 		return ret
+
+'''
+Create's a new points item and adds users to it
+'''
+def insert_points_item_with_users(points_item, completed, missed):
+	#Put the points item in ndb
+	points_item.put()
+	#Create a list for put_multi
+	point_items = list()
+	#Now iterate through completed and not completed
+	for _user_email in completed:
+		point_items.append(UserPointItem(user_email = _user_email, point_item=points_item, completed=True))
+	for _user_email in missed:
+		point_items.append(UserPointItem(user_email = _user_email, point_item=points_item, completed=False))
+	ndb.put_multi(point_items)
