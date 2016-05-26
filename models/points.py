@@ -38,13 +38,14 @@ class UserPointItem(ndb.Model):
 	point_item = ndb.StructuredProperty(PointItem, required = True)
 	#Did they complete it
 	completed = ndb.BooleanProperty(required = True)
-	'''
-	Get's the points for a specified user. It will query the UserPointItem to find all the points for a user
 
-	Returns an integer with the points
-	'''
 	@classmethod
 	def get_points_for_user_in_term(self, email,term):
+		'''
+		Get's the points for a specified user. It will query the UserPointItem to find all the points for a user
+
+		Returns an integer with the points
+		'''
 		results = self.query().filter(self.user_email == email,self.point_item.term==term).fetch()
 		if len(results) == 0:
 			return 0
@@ -73,7 +74,15 @@ class UserPointItem(ndb.Model):
 		return ret
 
 '''
-Create's a new points item and adds users to it
+Create's a new points item and adds users to it.
+
+Args:
+	points_item: An instance of a UserPointItem class. Not in NDB yet!
+	completed: a list of emails of users who have completed points_item
+	missed: a list of emails of users who have not completed points_item
+
+Returns:
+	none
 '''
 def insert_points_item_with_users(points_item, completed, missed):
 	#Put the points item in ndb

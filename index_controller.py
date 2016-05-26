@@ -14,6 +14,12 @@ class MainPage(webapp2.RequestHandler):
 		template = JINJA_ENVIRONMENT.get_template('index.html')
 		self.response.write(template.render({}))
 
+class HelpPage(webapp2.RequestHandler):
+	def get(self):
+		template = JINJA_ENVIRONMENT.get_template('help.html')
+		self.response.write(template.render({}))
+
 app = webapp2.WSGIApplication([
-	('/',MainPage)
+	('/',MainPage),
+	('/help',HelpPage)
 ],debug = True)
