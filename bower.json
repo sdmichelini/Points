@@ -1,0 +1,27 @@
+{
+  "name": "Points",
+  "authors": [
+    "Stephen Michelini <sdmichelini@wpi.edu>"
+  ],
+  "description": "Point tracking web app",
+  "main": "",
+  "moduleType": [],
+  "keywords": [
+    "point",
+    "tracking"
+  ],
+  "license": "MIT",
+  "homepage": "",
+  "private": true,
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "jquery": "~2.2.4",
+    "bootstrap": "v4.0.0-alpha.2"
+  }
+}
