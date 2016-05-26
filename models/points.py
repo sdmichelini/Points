@@ -7,6 +7,9 @@ import logging
 
 TERMS = {0: 'A', 1: 'B', 2: 'C', 3: 'D', 4: 'All Year'}
 
+#Cache for all users points item
+POINTS_CACHE = {}
+
 class DateJsonEncoder(json.JSONEncoder):
 	def default(self,obj):
 		if(isinstance(obj, datetime.datetime)):
@@ -64,7 +67,7 @@ class UserPointItem(ndb.Model):
 	'''
 	@classmethod
 	def get_points_for_all_users_in_term(self, term):
-		results = self.query().filter(self.point_item.term == term).fetch()
+		results = self.query().filter(self.point_item.term == int(term)).fetch()
 		ret = {}
 		for item in results:
 			if item.completed:
@@ -85,6 +88,7 @@ Returns:
 	none
 '''
 def insert_points_item_with_users(points_item, completed, missed):
+	flush_cache()
 	#Put the points item in ndb
 	points_item.put()
 	#Create a list for put_multi
@@ -95,3 +99,61 @@ def insert_points_item_with_users(points_item, completed, missed):
 	for _user_email in missed:
 		point_items.append(UserPointItem(user_email = _user_email, point_item=points_item, completed=False))
 	ndb.put_multi(point_items)
+
+
+def get_all_users_points_as_dict_for_term(term):
+	"""
+	Get's all user's total points for a given term. It uses caching to reduce database queries
+
+	Args:
+
+		term: Integer representing the term that is requested
+
+	Returns:
+
+		A dictionary with the keys being the users emails and the values being their points sum.
+	"""
+	global POINTS_CACHE
+	if term in POINTS_CACHE:#The cache is populated
+		return POINTS_CACHE.get(term)
+	else:#The cache is not populated
+		POINTS_CACHE = get_points_cache()
+		return POINTS_CACHE.get(term)
+
+def get_user_points_for_term(user, term):
+	"""
+	Get's a users points for a given term.
+
+	Args:
+		user: Email of User
+		term: Integer representing the term requested
+
+	Returns:
+		Integer with the points for a user in the current term
+	"""
+	all_users = get_all_users_points_as_dict_for_term(term)
+	ret = all_users.get(user)
+	if ret is None:
+		return 0
+	else:
+		return ret
+
+def get_points_cache():
+	"""
+	Get's a copy of the Python dictionary to populate the points cache. Note
+	this method does not actually assign the value to POINTS_CACHE
+
+	Args:
+		None
+	Returns:
+		Python dictionary of all the terms points
+	"""
+	logging.error('Points database hit!')
+	global TERMS
+	ret_dict = {}
+	for key in TERMS:
+		ret_dict[key] = UserPointItem.get_points_for_all_users_in_term(key)
+	return ret_dict
+def flush_cache():
+	global POINTS_CACHE
+	POINTS_CACHE.clear()

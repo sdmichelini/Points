@@ -2,6 +2,7 @@ import sys
 sys.path.insert(1,'/usr/local/google_appengine')
 sys.path.insert(1,'/usr/local/google_appengine/lib/yaml/lib')
 
+import time
 import unittest
 
 from models import points
@@ -18,6 +19,7 @@ class PointsTestCase(unittest.TestCase):
 		ndb.get_context().clear_cache()
 
 	def tearDown(self):
+		points.flush_cache()
 		self.testbed.deactivate()
 
 	def testGetUserPointsTerm(self):
@@ -73,6 +75,20 @@ class PointsTestCase(unittest.TestCase):
 		self.assertEqual(5, points.UserPointItem.get_points_for_user_in_term('test2@example.com',2))
 		self.assertEqual(-5, points.UserPointItem.get_points_for_user_in_term('joe@example.com',2))
 
+	def testGetUsersWithCache(self):
+		points_dict = points.get_all_users_points_as_dict_for_term(2)
+		self.assertEqual({}, points_dict)
+		point_item3 = points.PointItem(title='My Points Item 2',
+					points_completed=5,
+					points_missed=5,
+					term=2)
+		point_item3.put()
+		points.insert_points_item_with_users(point_item3, ['joe@example.com'], [])
+		points_dict = points.get_all_users_points_as_dict_for_term(2)
+		self.assertEqual(1, len(points_dict))
+		self.assertEqual(5, points_dict.get('joe@example.com'))
+		points_dict = points.get_all_users_points_as_dict_for_term(1)
+		self.assertEqual({}, points_dict)
 
 
 
