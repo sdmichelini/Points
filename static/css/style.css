@@ -18,3 +18,17 @@ h1 {
 	height: 60px;
 	background-color: #f5f5f5;
 }
+
+.points-select{
+	background-color: #cc0000;
+	color: white;
+	padding: 15px 32px;
+	border: none;
+	margin-bottom: 10px;
+	width: 100%;
+}
+
+.white{
+	color: white;
+	margin: 5px;
+}

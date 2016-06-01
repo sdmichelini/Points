@@ -10,6 +10,14 @@ handlers:
   static_dir: static
 - url: /bower_components
   static_dir: bower_components
+- url: /admin
+  secure: always
+  script: admin_controller.app
+  login: admin
+- url: /admin/.*
+  secure: always
+  script: admin_controller.app
+  login: admin
 - url: /.*
   secure: always
   script: index_controller.app
@@ -20,4 +28,4 @@ libraries:
 - name: webapp2
   version: latest
 - name: jinja2
-  version: latest 
+  version: latest

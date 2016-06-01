@@ -41,7 +41,8 @@ class UserPointItem(ndb.Model):
 	point_item = ndb.StructuredProperty(PointItem, required = True)
 	#Did they complete it
 	completed = ndb.BooleanProperty(required = True)
-
+	#Weight
+	weight = ndb.FloatProperty(default=1.0)
 	@classmethod
 	def get_points_for_user_in_term(self, email,term):
 		'''
@@ -56,7 +57,7 @@ class UserPointItem(ndb.Model):
 			sum_points = 0
 			for item in results:
 				if item.completed:
-					sum_points += item.point_item.points_completed
+					sum_points += item.weight * item.point_item.points_completed
 				else:
 					sum_points -= item.point_item.points_missed
 			return sum_points
@@ -100,6 +101,27 @@ def insert_points_item_with_users(points_item, completed, missed):
 		point_items.append(UserPointItem(user_email = _user_email, point_item=points_item, completed=False))
 	ndb.put_multi(point_items)
 
+
+def insert_points_items_with_weights(points_item, completed_dict, missed_dict):
+	"""
+	Insert users points item with a weight.
+
+	Args:
+		points_item: NDB Model for the Overall Points Item
+		completed_dict: Dictionary with the users emails as keys and weights as values
+		missed_dict: Dictionary with the users emails as keys and weights as values
+	"""
+	flush_cache()
+	points_item.put()
+	point_items = list()
+	for _user_email in completed_dict:
+		points_item.append(UserPointItem(user_email = _user_email, point_item=points_item,
+						completed = True, weight = completed_dict[_user_email]))
+	for _user_email in missed_dict:
+		points_item.append(UserPointItem(user_email = _user_email, point_item=points_item,
+						completed = False, weight=missed_dict[_user_email]))
+	ndb.put_multi(point_items)
+		
 
 def get_all_users_points_as_dict_for_term(term):
 	"""
