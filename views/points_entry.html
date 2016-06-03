@@ -1,0 +1,86 @@
+{% extends "base.html" %}
+{% block content %}
+
+<div class='container-fluid text-xs-center heading'>
+	<h1>Points Entry</h1>
+</div>
+
+<div class='container'>
+	<div class='row'>
+		<div class='col-xs-12'>
+			<form id='pointsSubmit'>
+				<div class='card'>
+					<div class='card-block'>
+							<div class='row'>
+								<div class='col-xs-12 col-md-6'>
+									<fieldset class='form-group'>
+									<label for='eventTitle'>Event Title</label>
+									<input type='text' class='form-control' id='eventTitle' placeholder='Title'>
+									<small id='grey-accent'>This is the title for the event. For example it could say
+									"House Meeting"</small>
+									</fieldset>
+								</div>
+								<div class='col-xs-12 col-md-6'>		
+									<fieldset class='form-group'>
+										<label for='eventDescription'>Event Description</label>
+										<textarea class='form-control' id='eventDescription'></textarea> 
+										<small id='grey-accent'>This is the title for the event. For example it could say
+									"House Meeting"</small>
+									</fieldset>
+								</div>
+							</div>
+							<div class='row'>
+								<div class='col-xs-12 col-md-4'>
+									<fieldset class='form-group'>
+										<label for='termSelect'>Select Term</label>
+										<select class='form-control' id='termSelect'>
+											<option>A</option>
+											<option>B</option>
+											<option>C</option>
+											<option>D</option>
+											<option>None</option>
+										</select>
+									</fieldset>
+										</div>
+										<div class='col-xs-12 col-md-4'>
+									<fieldset class='form-group'>
+										<label for'pointsFor'>Points for Completion</label>
+										<input type='number' min='0' class='form-control' id='pointsFor'>
+										<small id='grey-accent'>Points earned for completing the event.</small>
+									</fieldset>
+										</div>
+										<div class='col-xs-12 col-md-4'>
+
+									<fieldset class='form-group'>
+										<label for'pointsAgainst'>Points for Failure</label>
+										<input type='number' min='0' class='form-control' id='pointsAgainst'>
+										<small id='grey-accent'>Points lost for failure to attend event.</small>
+									</fieldset>
+								</div>
+							</div>
+							<div class='checkbox'>
+								<label>
+									<input type='checkbox' id='mandatory'>Mandatory?
+								</label>
+								<label>
+									<input type='checkbox' id='weighted'>Weighted?
+								</label>
+							</div>
+						</div>
+					</div>
+					<div class='card'>
+						<div class='card-block'>
+							<div id='userEntry'>
+								Fetching user information...
+							</div>
+						</div>
+					</div>
+					<button type='submit' id='pointsSubmit' class='btn btn-primary'>Do Points</button>
+				</form>
+		</div>
+	</div>
+</div>
+{% endblock %}
+{% block script %}
+	<script type='text/javascript' src='/static/js/user_points.js'></script>
+{% endblock %}

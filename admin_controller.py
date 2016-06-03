@@ -17,6 +17,12 @@ class AdminPage(webapp2.RequestHandler):
 		template = JINJA_ENVIRONMENT.get_template('admin.html')
 		self.response.write(template.render({}))
 
+class AdminPointsPage(webapp2.RequestHandler):
+	def get(self):
+		template = JINJA_ENVIRONMENT.get_template('points_entry.html')
+		self.response.write(template.render({}))
+
 app = webapp2.WSGIApplication([
 	('/admin',AdminPage),
+	('/admin/points',AdminPointsPage)
 ],debug = True)
