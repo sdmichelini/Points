@@ -5,6 +5,7 @@ import os
 import webapp2
 
 from models import points
+from models import users
 
 #Jinja
 JINJA_ENVIRONMENT = jinja2.Environment(
@@ -39,6 +40,16 @@ class PointsApi(webapp2.RequestHandler):
 			self.response.write(json.dumps({'message':'Error: Invalid parameter'}))
 
 
+class AllUsers(webapp2.RequestHandler):
+	def get(self):
+		"""HTTP GET endpoit for users api
+
+		This returns JSON and always has a message field
+		"""
+		self.response.headers['Content-Type'] = 'application/json'
+		msg = {'message': 'Success', 'result': users.get_all_users()}
+		self.response.write(json.dumps(msg))
+
 def get_term(term_parameter):
 	"""
 	This method will convert a term into an integer representation of it
@@ -58,5 +69,6 @@ def get_term(term_parameter):
 app = webapp2.WSGIApplication([
 	('/',MainPage),
 	('/help',HelpPage),
-	('/api/points',PointsApi)
+	('/api/points',PointsApi),
+	('/users', AllUsers)
 ],debug = True)

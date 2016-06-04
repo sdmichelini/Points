@@ -29,14 +29,14 @@
 								<th>Points</th>
 							</tr>
 						</thead>
-						<tbody>
+						<tbody id='pointsResults'>
 							<tr>
-								<th scope='row'>1</th>
-								<td>Stephen Michelini</td>
-								<td>1124</td>
+								<td>
+									Fetching Points Results...
+								</td>
 							</tr>
 						</tbody>
-
+					</table>
 				</div>
 			</div>
 		</div>
@@ -45,4 +45,7 @@
 
 </div>
 
+{% endblock %}
+{% block script %}
+<script type='text/javascript' src='/static/js/points.js'></script>
 {% endblock %}

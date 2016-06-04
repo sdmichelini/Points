@@ -102,24 +102,20 @@ def insert_points_item_with_users(points_item, completed, missed):
 	ndb.put_multi(point_items)
 
 
-def insert_points_items_with_weights(points_item, completed_dict, missed_dict):
+def insert_points_items_with_weights(points_item, completed_dict):
 	"""
 	Insert users points item with a weight.
 
 	Args:
 		points_item: NDB Model for the Overall Points Item
-		completed_dict: Dictionary with the users emails as keys and weights as values
-		missed_dict: Dictionary with the users emails as keys and weights as values
+		completed_dict: Dictionary with the email as keys and actual email as values
 	"""
 	flush_cache()
 	points_item.put()
 	point_items = list()
 	for _user_email in completed_dict:
-		points_item.append(UserPointItem(user_email = _user_email, point_item=points_item,
-						completed = True, weight = completed_dict[_user_email]))
-	for _user_email in missed_dict:
-		points_item.append(UserPointItem(user_email = _user_email, point_item=points_item,
-						completed = False, weight=missed_dict[_user_email]))
+		point_items.append(UserPointItem(user_email = _user_email['user'], point_item=points_item,
+						completed = _user_email['completed'], weight = _user_email['weight']))
 	ndb.put_multi(point_items)
 		
 

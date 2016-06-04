@@ -10,7 +10,7 @@ $(document).ready(function(){
 });
 
 //TODO: Add Users URL
-var USERS_URL = '';
+var USERS_URL = '/admin/points';
 var USERS = [];
 
 function submitPoints(){
@@ -30,7 +30,7 @@ function submitPoints(){
 	}
 	var entry = {title: $('#eventTitle').val(),
 		description: $('#eventDescription').val(),
-		term: $('#term').val(),
+		term: $('#termSelect').val(),
 		points_completed: $('#pointsFor').val(),
 		points_missed: $('#pointsAgainst').val(),
 		mandatory: $('#mandatory').is(':checked'),
@@ -38,24 +38,36 @@ function submitPoints(){
 	};
 	for(var i = 0; i < USERS.length; i++){
 		if($('#'+genId(USERS[i], '3')).is(':checked')){
-			entry.user_items.push({user: USERS[i].email, weight: 0.0});
+			entry.user_items.push({user: USERS[i].email, weight: 0.0, completed: true});
 			alert(genId(USERS[i], '3') +":"+$('#'+genId(USERS[i],'3')).is(':checked'));
 		}else if($('#'+genId(USERS[i], '1')).is(':checked')){
 			if($('#weighted').is(':checked')){
-				entry.user_items.push({user: USERS[i].email, weight: Number($('#'+genId(USERS[i],'4')).val())/Number($('#pointsFor').val())});
+				entry.user_items.push({user: USERS[i].email, weight: Number($('#'+genId(USERS[i],'4')).val())/Number($('#pointsFor').val()), completed: true});
 			}else{
-				entry.user_items.push({user: USERS[i].email, weight: 1.0});
+				entry.user_items.push({user: USERS[i].email, weight: 1.0, completed: true});
 			}
 		}else if($('#'+genId(USERS[i], '2')).is(':checked')){
 			if($('#weighted').is(':checked')){
-				entry.user_items.push({user: USERS[i].email, weight: Number($('#'+genId(USERS[i],'4')).val())/Number($('#pointsAgainst').val())});
+				entry.user_items.push({user: USERS[i].email, weight: Number($('#'+genId(USERS[i],'4')).val())/Number($('#pointsAgainst').val()), completed: false});
 
 			}else{
-				entry.user_items.push({user: USERS[i].email, weight: 1.0});
+				entry.user_items.push({user: USERS[i].email, weight: 1.0, completed: false});
 			}
 		}	
 	}
 	alert(JSON.stringify(entry));
+	$.ajax({
+		type: 'POST',
+		url: USERS_URL,
+		data: JSON.stringify(entry),
+		success: function(msg){
+			console.log('Success');
+			location.reload();
+		},
+		error: function(){
+			alert('Error Submitting Form');
+		 }
+	});
 }
 
 function loadUsers(){
