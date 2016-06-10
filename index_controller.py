@@ -1,8 +1,11 @@
+import base64
 import jinja2
 import json
 import logging
 import os
 import webapp2
+
+from flags import flags
 
 from models import points
 from models import users
@@ -50,6 +53,31 @@ class AllUsers(webapp2.RequestHandler):
 		msg = {'message': 'Success', 'result': users.get_all_users()}
 		self.response.write(json.dumps(msg))
 
+class UserDetails(webapp2.RequestHandler):
+	def get(self, user_id):
+		"""HTTP Get Endpoint for Specific User
+
+		"""
+
+		self.response.headers['Content-Type'] = 'application/json'
+		success = False
+		try:
+			email = base64.b64decode(user_id)
+			results = points.UserPointItem.query(points.UserPointItem.user_email == email).fetch()
+			success = True
+		except:
+			logging.exception('')
+			self.response.set_status(400)
+			self.response.write(json.dumps({'msg': 'Error Decoding User-Id'}))
+		if success:
+			if len(results) < 1:
+				self.response.set_status(404)
+				self.response.write(json.dumps({'msg':'Error: User not found.'}))
+			else:
+				self.response.write(json.dumps({'msg':'Success', 'results' : json.dumps([p.to_dict() for p in results], cls = points.DateJsonEncoder)}))
+				self.response.write(json.dumps({'msg':'User ID', 'id': email}))
+
+
 def get_term(term_parameter):
 	"""
 	This method will convert a term into an integer representation of it
@@ -65,10 +93,19 @@ def get_term(term_parameter):
 	ret = int(term_parameter)
 	return ret
 
+def handle_404(request, response, exception):
+	logging.exception(exception)
+        #response.write('Oops! I could swear this page was here!')
+	template = JINJA_ENVIRONMENT.get_template('not_found.html')
+	response.write(template.render({}))
+	response.set_status(404)
 
 app = webapp2.WSGIApplication([
 	('/',MainPage),
 	('/help',HelpPage),
 	('/api/points',PointsApi),
-	('/users', AllUsers)
+	('/users', AllUsers),
+	(r'/users/([a-zA-Z0-9=]*)', UserDetails)
 ],debug = True)
+
+app.error_handlers[404] = handle_404

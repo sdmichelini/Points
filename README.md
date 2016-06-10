@@ -34,6 +34,11 @@ To run the points unit test run
 python tests/points_test.py
 ```
 
+## TODO ##
+
+- Add in a user's detail page
+- Add ability to dispute points items
+
 ## Authors ##
 
 - sdmichelini

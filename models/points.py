@@ -175,3 +175,7 @@ def get_points_cache():
 def flush_cache():
 	global POINTS_CACHE
 	POINTS_CACHE.clear()
+
+
+def get_details_for_user(user_id):
+	pass
