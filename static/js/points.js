@@ -19,6 +19,10 @@ function loadUsers(){
 	if(POINTS.length > 0)updatePoints();
 }
 
+function generatePointsLink(email){
+	return '/users/'+btoa(email);
+}
+
 function updatePoints(){
 	
 		var items = Object.keys(POINTS).map(function(key){
@@ -34,7 +38,7 @@ function updatePoints(){
 			if(USERS[name.replace("@","").replace(".","")])name=USERS[name.replace("@","").replace(".","")];
 			console.log(USERS[name.replace("@","").replace(".","")]);
 			htmlAdd += '<tr><th scope="row">' + (i+1) + '</th>'+
-			'<td>'+name+'</td><td>'+items[i][1]+'</td></tr>';
+			'<td><a href="'+generatePointsLink(items[i][0])+'">'+name+'</a></td><td>'+items[i][1]+'</td></tr>';
 		}
 		$('#pointsResults').html('');
 		$('#pointsResults').html(htmlAdd);

@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+{% block content %}
+<div class='container-fluid text-xs-center heading'>
+	<h1> {{ email }} Points</h1>
+</div>
+<div class='container'>
+<ul class='list-group'>
+	{% for user in result %}
+	<li class="{{ user.color  }}">
+	<b>{{ user.title }}</b>
+	<h3 class='pull-xs-right'>{{ user.points  }}</h3>
+	</li>
+	{% endfor %}
+</ul>
+<a href='/' class='text-xs-center'>Go Home</a>
+</div>
+{% endblock %}

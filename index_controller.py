@@ -59,7 +59,6 @@ class UserDetails(webapp2.RequestHandler):
 
 		"""
 
-		self.response.headers['Content-Type'] = 'application/json'
 		success = False
 		try:
 			email = base64.b64decode(user_id)
@@ -68,14 +67,32 @@ class UserDetails(webapp2.RequestHandler):
 		except:
 			logging.exception('')
 			self.response.set_status(400)
-			self.response.write(json.dumps({'msg': 'Error Decoding User-Id'}))
+			self.abort(400)
 		if success:
 			if len(results) < 1:
 				self.response.set_status(404)
-				self.response.write(json.dumps({'msg':'Error: User not found.'}))
+				self.abort(404)
 			else:
-				self.response.write(json.dumps({'msg':'Success', 'results' : json.dumps([p.to_dict() for p in results], cls = points.DateJsonEncoder)}))
-				self.response.write(json.dumps({'msg':'User ID', 'id': email}))
+				#self.response.write(json.dumps({'msg':'Success', 'results' : json.dumps([p.to_dict() for p in results], cls = points.DateJsonEncoder)}))
+				#self.response.write(json.dumps({'msg':'User ID', 'id': email}))
+				items = []
+				for user in results:
+					points_earned = 0
+					if user.completed:
+						points_earned = user.weight * user.point_item.points_completed
+					else:
+						points_earned = user.weight * user.point_item.points_missed
+					color = ''
+					if user.completed:
+						color = 'list-group-item bg-success'
+					elif int(points_earned) == 0:
+						color = 'list-group-item bg-primary'
+					else:
+						color = 'list-group-item bg-danger'
+					items.append({ 'title' : user.point_item.title,  'completed' : user.completed,
+						'points': int(points_earned), 'color': color }) 
+				template = JINJA_ENVIRONMENT.get_template('user_points.html')
+				self.response.write(template.render({'result' : items , 'email': email }))
 
 
 def get_term(term_parameter):
