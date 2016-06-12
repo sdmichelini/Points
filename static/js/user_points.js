@@ -1,4 +1,10 @@
 $(document).ready(function(){
+	loadParams();
+	if(PARAMS['config'] == '1'){
+		$('#weighted').prop('checked', true);
+	}else if(PARAMS['config'] == '2'){
+		$('#mandatory').prop('checked', true);
+	}
 	loadUsers();
 	$('#weighted').change(function(){
 		setWeightDisabled(!$('#weighted').is(':checked'));		
@@ -12,6 +18,19 @@ $(document).ready(function(){
 //TODO: Add Users URL
 var USERS_URL = '/admin/points';
 var USERS = [];
+var PARAMS = [];
+
+function loadParams(){
+	var vars = [], hash;
+	var hashes = window.location.href.slice(window.location.href.indexOf('?') + 1).split('&');
+	for(var i = 0; i < hashes.length; i++)
+	{
+		hash = hashes[i].split('=');
+		vars.push(hash[0]);
+		vars[hash[0]] = hash[1];
+	}
+	PARAMS = vars;
+}
 
 function submitPoints(){
 	//Validiate form
