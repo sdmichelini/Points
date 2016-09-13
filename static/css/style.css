@@ -3,8 +3,12 @@ h1 {
 }
 
 .heading{
-	background-color: #cc0000;
+	background: linear-gradient(to right, #ff0000, #cc3434);
 	color: white;
+}
+
+body {
+	background-color: rgb(230,230,230);
 }
 
 #grey-accent{
@@ -31,4 +35,12 @@ h1 {
 .white{
 	color: white;
 	margin: 5px;
+}
+
+div.card {
+	box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+}
+
+button.btn {
+	box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
 }

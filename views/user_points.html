@@ -1,17 +1,23 @@
 {% extends "base.html" %}
 {% block content %}
 <div class='container-fluid text-xs-center heading'>
-	<h1> {{ email }} Points</h1>
+	<h1>Zeta-Mu Points</h1>
 </div>
+<h3>
+
+</h3>
 <div class='container'>
-<ul class='list-group'>
-	{% for user in result %}
-	<li class="{{ user.color  }}">
-	<b>{{ user.title }}</b>
-	<h3 class='pull-xs-right'>{{ user.points  }}</h3>
-	</li>
-	{% endfor %}
-</ul>
-<a href='/' class='text-xs-center'>Go Home</a>
+	<p>
+		Points for  {{ email }}
+	</p>
+	<ul class='list-group'>
+		{% for user in result %}
+		<li class="{{ user.color  }}">
+		<b>{{ user.title }}</b>
+		<h3 class='pull-xs-right'>{{ user.points  }}</h3>
+		</li>
+		{% endfor %}
+	</ul>
+	<a href='/' class='text-xs-center'>Go Home</a>
 </div>
 {% endblock %}

@@ -5,10 +5,14 @@ import logging
 import os
 import webapp2
 
-from flags import flags
+import hashlib
+
+#from flags import flags
 
 from models import points
 from models import users
+
+ETAG = ""
 
 #Jinja
 JINJA_ENVIRONMENT = jinja2.Environment(
@@ -19,12 +23,38 @@ JINJA_ENVIRONMENT = jinja2.Environment(
 class MainPage(webapp2.RequestHandler):
 	def get(self):
 		template = JINJA_ENVIRONMENT.get_template('index.html')
-		self.response.write(template.render({}))
+		result = template.render({})
+		m = hashlib.md5()
+		m.update(json.dumps(result))
+		#Get E-Tag
+		e_tag = m.digest().encode('base64').strip()
+		if 'If-None-Match' in self.request.headers:
+			if e_tag in self.request.headers['If-None-Match']:
+				self.response.set_status(304)
+				self.response.write("")
+				return
+			else:
+				logging.error("If-None-Match: {}".format(self.request.headers['If-None-Match']))
+		self.response.etag = e_tag
+		self.response.write(result)
 
 class HelpPage(webapp2.RequestHandler):
 	def get(self):
 		template = JINJA_ENVIRONMENT.get_template('help.html')
-		self.response.write(template.render({}))
+		result = template.render({})
+		m = hashlib.md5()
+		m.update(json.dumps(result))
+		#Get E-Tag
+		e_tag = m.digest().encode('base64').strip()
+		if 'If-None-Match' in self.request.headers:
+			if e_tag in self.request.headers['If-None-Match']:
+				self.response.set_status(304)
+				self.response.write("")
+				return
+			else:
+				logging.error("If-None-Match: {}".format(self.request.headers['If-None-Match']))
+		self.response.etag = e_tag
+		self.response.write(result)
 
 class PointsApi(webapp2.RequestHandler):
 	def get(self):
@@ -37,7 +67,22 @@ class PointsApi(webapp2.RequestHandler):
 		term = self.request.get('term',default_value='0')
 		try:
 			term_int = get_term(term)
-			self.response.write(json.dumps({'message':'Success', 'result':points.get_all_users_points_as_dict_for_term(term_int)}))
+			result = points.get_all_users_points_as_dict_for_term(term_int)
+			m = hashlib.md5()
+			m.update(json.dumps(result))
+			#Get E-Tag
+			e_tag = m.digest().encode('base64').strip()
+			logging.error("E-Tag{}".format(e_tag))
+			if 'If-None-Match' in self.request.headers:
+				if e_tag in self.request.headers['If-None-Match']:
+					self.response.set_status(304)
+					self.response.write("")
+					return
+				else:
+					logging.error("If-None-Match: {}".format(self.request.headers['If-None-Match']))
+			self.response.etag = e_tag
+			self.response.write(json.dumps({'message':'Success', 'result':result}))
+
 		except ValueError:
 			self.response.set_status(400)
 			self.response.write(json.dumps({'message':'Error: Invalid parameter'}))
@@ -50,8 +95,20 @@ class AllUsers(webapp2.RequestHandler):
 		This returns JSON and always has a message field
 		"""
 		self.response.headers['Content-Type'] = 'application/json'
-		msg = {'message': 'Success', 'result': users.get_all_users()}
-		self.response.write(json.dumps(msg))
+		result = users.get_all_users()
+		m = hashlib.md5()
+		m.update(json.dumps(result))
+		#Get E-Tag
+		e_tag = m.digest().encode('base64').strip()
+		if 'If-None-Match' in self.request.headers:
+			if e_tag in self.request.headers['If-None-Match']:
+				self.response.set_status(304)
+				self.response.write("")
+				return
+			else:
+				logging.error("If-None-Match: {}".format(self.request.headers['If-None-Match']))
+		self.response.etag = e_tag
+		self.response.write(json.dumps({'message':'Success', 'result':result}))
 
 class UserDetails(webapp2.RequestHandler):
 	def get(self, user_id):
@@ -90,7 +147,7 @@ class UserDetails(webapp2.RequestHandler):
 					else:
 						color = 'list-group-item bg-danger'
 					items.append({ 'title' : user.point_item.title,  'completed' : user.completed,
-						'points': int(points_earned), 'color': color }) 
+						'points': int(points_earned), 'color': color })
 				template = JINJA_ENVIRONMENT.get_template('user_points.html')
 				self.response.write(template.render({'result' : items , 'email': email }))
 
