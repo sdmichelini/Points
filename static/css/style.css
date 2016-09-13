@@ -5,6 +5,7 @@ h1 {
 .heading{
 	background: linear-gradient(to right, #ff0000, #cc3434);
 	color: white;
+	box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
 }
 
 body {
