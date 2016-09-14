@@ -7,7 +7,7 @@ $(document).ready(function(){
 	}
 	loadUsers();
 	$('#weighted').change(function(){
-		setWeightDisabled(!$('#weighted').is(':checked'));		
+		setWeightDisabled(!$('#weighted').is(':checked'));
 	});
 	$('#pointsSubmit').on('submit', function(e){
 		e.preventDefault();
@@ -72,7 +72,7 @@ function submitPoints(){
 			}else{
 				entry.user_items.push({user: USERS[i].email, weight: 1.0, completed: false});
 			}
-		}	
+		}
 	}
 	alert(JSON.stringify(entry));
 	$.ajax({
@@ -90,17 +90,26 @@ function submitPoints(){
 }
 
 function loadUsers(){
+
+	$.get('/users',function(data){
+		var users = [];
+		for(var email in data.result) {
+			users.push({name:data.result[email], email: email });
+		}
+		didFinishLoad(users);
+	});
+	/*
 	var users = [
 	{name: 'Test User', email: 'test@example.com'},
 	{name: 'Bob' , email: 'bob@example.com'}
-		];
-	didFinishLoad(users);
+];*/
+
 }
 
 function didFinishLoad(users){
 	html = '<h3>Users</h3><br>';
 	for(var i = 0; i < users.length; i++){
-		html += createUserHtml(users[i]); 
+		html += createUserHtml(users[i]);
 	}
 	USERS = users;
 	$('#userEntry').html(html);
@@ -133,9 +142,9 @@ function setWeightDisabled(disable){
 	if(disable == true){
 		for(var i = 0; i < USERS.length; i++){
 			$('#'+genId(USERS[i],'5')).prop('disabled', true);
-		}		
+		}
 	}else if(disable == false){
-		for(var i = 0; i < USERS.length; i++){	
+		for(var i = 0; i < USERS.length; i++){
 		$('#'+genId(USERS[i],'5')).prop('disabled', false);
 		}
 	}
