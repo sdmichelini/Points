@@ -7,17 +7,19 @@
 
 </h3>
 <div class='container'>
-	<p>
-		Points for  {{ email }}
-	</p>
-	<ul class='list-group'>
-		{% for user in result %}
-		<li class="{{ user.color  }}">
-		<b>{{ user.title }}</b>
-		<h3 class='pull-xs-right'>{{ user.points  }}</h3>
-		</li>
-		{% endfor %}
-	</ul>
+	<div class='card card-inset'>
+		<h2 class='text-xs-center' id='grey-heading'>
+			Points for  {{ email }}
+		</h2>
+		<ul class='list-group'>
+			{% for user in result %}
+			<li class="{{ user.color  }}">
+			<b>{{ user.title }}</b>
+			<h3 class='pull-xs-right'>{{ user.points  }}</h3>
+			</li>
+			{% endfor %}
+		</ul>
+	</div>
 	<a href='/' class='text-xs-center'>Go Home</a>
 </div>
 {% endblock %}
