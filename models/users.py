@@ -26,7 +26,9 @@ USERS = {
 	'brian.praetorius@gmail.com':'Brian Praetorius',
 	'zligham@gmail.com':'Ligham',
 	'willbennett1301@gmail.com':'Bennett',
-	'jvb2358@gmail.com':'Jon Van Blarcum'
+	'jvb2358@gmail.com':'Jon Van Blarcum',
+	'hillofthematts@gmail.com':'Matt Hill',
+	'bobraidered@gmail.com':'Bobby Ronacher'
 }
 
 def get_all_users():
