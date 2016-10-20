@@ -106,8 +106,26 @@ function loadUsers(){
 
 }
 
+function compareUsers(a, b){
+	if(!a.name || !b.name){
+		return 0;
+	}
+	var splitA = a.name.toLowerCase().split(" ");
+	var splitB = b.name.toLowerCase().split(" ");
+
+	var lastA = splitA[splitA.length - 1];
+	var lastB = splitB[splitB.length - 1];
+
+	if (lastA < lastB)
+		return -1;
+	if (lastA > lastB)
+		return 1;
+	return 0;
+}
+
 function didFinishLoad(users){
 	html = '<h3>Users</h3><br>';
+	user = users.sort(compareUsers);
 	for(var i = 0; i < users.length; i++){
 		html += createUserHtml(users[i]);
 	}
@@ -117,7 +135,7 @@ function didFinishLoad(users){
 }
 
 function createUserHtml(user){
-	return "<li class='list-group-item' style='height: 4em;'>"+user.name+
+	return "<li class='list-group-item'>"+user.name+
 		"<div class='btn-group pull-xs-right' data-toggle='buttons'>"+
 			"<label class='btn btn-success-outline'>"+
 				"<input type='radio' id='"+user.email.replace("@","").replace(".","")+'1'+"' autocomplete='off'>P"+

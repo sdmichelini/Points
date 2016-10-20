@@ -72,3 +72,7 @@ button.btn {
 .card-inset {
 	padding-top: 1em;
 }
+
+.list-group-item {
+	height: 6em;
+}
